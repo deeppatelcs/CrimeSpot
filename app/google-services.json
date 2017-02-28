@@ -1,0 +1,42 @@
+{
+  "project_info": {
+    "project_number": "29048234798",
+    "firebase_url": "https://crimespot-1fee7.firebaseio.com",
+    "project_id": "crimespot-1fee7",
+    "storage_bucket": "crimespot-1fee7.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:29048234798:android:26004a45d72c69a1",
+        "android_client_info": {
+          "package_name": "com.example.dp863.crimespot"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "29048234798-dl7ipoadle7qsliq8eie4dhpd1vdb15a.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBnKKYjtLDiHRJUJa_nV8bKDLYFO9H0-4E"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
