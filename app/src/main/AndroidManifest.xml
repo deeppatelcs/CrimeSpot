@@ -10,52 +10,57 @@
          Google Maps Android API v2, but you must specify either coarse or fine
          location permissions for the 'MyLocation' functionality. 
     -->
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
-
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-        <activity
-            android:name=".MainActivity">
+        <activity android:name=".MainActivity">
+            <intent-filter>
+                <action android:name="com.example.dp863.crimespot.MainActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".LoginActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".LoginActivity" >
+        <activity android:name=".ProfileActivity">
             <intent-filter>
-                <action android:name="com.example.dp863.crimespot.LoginActivity"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.example.dp863.crimespot.ProfileActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".ProfileActivity">
+        <activity android:name=".MapsActivity">
             <intent-filter>
-                <action android:name="com.example.dp863.crimespot.ProfileActivity"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.example.dp863.crimespot.MapsActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
-
-        <activity
-            android:name=".MapsActivity">
+        <activity android:name=".SortActivity">
             <intent-filter>
-                <action android:name="com.example.dp863.crimespot.MapsActivity"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="com.example.dp863.crimespot.SortActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity android:name=".ForgotPassActivity">
+            <action android:name="com.example.dp863.crimespot.ForgotPassActivity" />
 
+            <category android:name="android.intent.category.DEFAULT" />
+        </activity>
+        <activity android:name=".DatePickerActivity"></activity>
     </application>
 
 </manifest>

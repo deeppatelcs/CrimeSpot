@@ -60,11 +60,22 @@
             android:text="Login"/>
 
         <Button
+            android:id="@+id/buttonForgotPass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_margin="15dp"
+            android:text="Forgot your password?"
+            android:background ="@null"
+            android:textColor="@color/colorAccent"/>
+
+        <Button
             android:id="@+id/buttonSignup"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="15dp"
-            android:text="Not have an account? Signup here"/>
+            android:text="Not a member? Signup here"
+            android:background ="@null"
+            android:textColor="@color/colorPrimary"/>
 
 
     </LinearLayout>
