@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/mapType"
+        android:title="Map Type">
+        <menu>
+            <item
+                android:id="@+id/mapTypeNormal"
+                android:title="@string/normal"/>
+
+            <item
+                android:id="@+id/mapTypeSatellite"
+                android:title="@string/satellite"/>
+
+            <item
+                android:id="@+id/mapTypeHybrid"
+                android:title="@string/hybrid"/>
+        </menu>
+    </item>
+    <item
+        android:id="@+id/layoutType"
+        android:title="Layout options">
+        <menu>
+            <item
+                android:id="@+id/layoutTypeMarkers"
+                android:title="Markers"/>
+            <item
+                android:id="@+id/layoutTypeCluster"
+                android:title="Clusters"/>
+
+            <item
+                android:id="@+id/layoutTypeHeatMap"
+                android:title="HeatMap"/>
+        </menu>
+    </item>
+
+</menu>
