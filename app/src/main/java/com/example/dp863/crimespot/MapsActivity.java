@@ -36,7 +36,11 @@ import com.google.maps.android.clustering.ClusterManager;
 import com.google.maps.android.heatmaps.Gradient;
 import com.google.maps.android.heatmaps.HeatmapTileProvider;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -60,7 +64,7 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
     private FirebaseDatabase mFirebaseInstance;
     private String crimeID;
     private double mLatitude, mLongitude;
-
+    Date fromDate, toDate;
 
     List<Crime> currentCrimeList = new ArrayList<Crime>();
     ImageButton mImageButton;
@@ -73,6 +77,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
             true,
             true
     };
+
+
     Map<String, Boolean> map = new HashMap<>();
     Set<String> keys = map.keySet();
 
@@ -90,11 +96,34 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         mapFragment.getMapAsync(this);
         onMyLocationButtonClick();
 
+        DateFormat df = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            fromDate = df.parse("01-01-2016");
+            toDate = df.parse("01-01-2020");
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+
         if (getIntent().getExtras() != null) {
-            isChecked = getIntent().getExtras().getBooleanArray("yourBool");
-            for (int i = 0; i < isChecked.length; i++) {
-                Log.i("My app", isChecked[i] ? "MapsActivity true" : "MapsActivity false");
-            }
+          if (getIntent().getExtras().getBooleanArray("yourBool") != null) {
+              isChecked = getIntent().getExtras().getBooleanArray("yourBool");
+              for (int i = 0; i < isChecked.length; i++) {
+                  Log.i("My app", isChecked[i] ? "MapsActivity true" : "MapsActivity false");
+              }
+          }
+          if(getIntent().getExtras().getString("fromDate") != null && getIntent().getExtras().getString("toDate") != null) {
+
+              try {
+                  fromDate = df.parse(getIntent().getExtras().getString("fromDate"));
+                  toDate = df.parse(getIntent().getExtras().getString("toDate"));
+              } catch (ParseException e) {
+                  e.printStackTrace();
+              }
+
+
+          }
+
         }
 
 
@@ -105,6 +134,8 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
         map.put("PROPERTY", isChecked[4]);
         map.put("WEAPONS", isChecked[5]);
         map.put("MISCELLANEOUS", isChecked[6]);
+
+
 
         for (Map.Entry<String, Boolean> entry : map.entrySet()) {
             String key = entry.getKey();
@@ -354,167 +385,184 @@ public class MapsActivity extends AppCompatActivity implements GoogleMap.OnMyLoc
 
     public void createMarker(List<Crime> currentCrimeList) {
         mMap.clear();
+        Log.e("My App", "From Date" + fromDate);
+        Log.e("My App", "to Date" + toDate);
         boolean markeradded;
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(35.606855, -77.355916), 15));
+
+        DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+        Date crimeDate = null;
+
         for (Crime crime : currentCrimeList) {
-            markeradded = false;
 
-            LatLng latLng = new LatLng(Double.parseDouble(crime.getLatitude()), Double.parseDouble(crime.getLongitude()));
-
-            MarkerOptions options = new MarkerOptions();
-            String type = crime.getType();
             try {
-                // Assault
+                crimeDate = df.parse(crime.getDate());
 
-                if (type.contains("ASSAULT") || type.contains("AWDW")) {
-                    markeradded = true;
-                    if (map.get("ASSAULT")) {
-
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
-                                .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
-                        mMap.addMarker(options);
-                    } else {
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .visible(false)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
-                        mMap.addMarker(options);
-                    }
-                }
-
-                // Larceny
-                if (type.contains("LARCENY")) {
-                    markeradded = true;
-                    if (map.get("LARCENY")) {
-
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
-                                .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
-                        ;
-                        mMap.addMarker(options);
-                    } else {
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .visible(false)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
-                        mMap.addMarker(options);
-                    }
-                }
-
-                // Robbery
-                if (type.contains("ROBBERY") || type.contains("BURGLARY")) {
-                    markeradded = true;
-                    if (map.get("ROBBERY")) {
-
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
-                                .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
-                        mMap.addMarker(options);
-                    } else {
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .visible(false)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
-                        mMap.addMarker(options);
-                    }
-                }
-
-                // Trespassing
-                if (type.contains("TRESPASSING") || type.contains("B & E")) {
-                    markeradded = true;
-                    if (map.get("TRESPASSING")) {
-
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
-                                .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
-                        mMap.addMarker(options);
-                    } else {
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .visible(false)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
-                        mMap.addMarker(options);
-                    }
-                }
-
-                // Property
-                if (type.contains("PROPERTY")) {
-                    markeradded = true;
-                    if (map.get("PROPERTY")) {
-
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
-                                .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
-                        mMap.addMarker(options);
-                    } else {
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .visible(false)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
-                        mMap.addMarker(options);
-                    }
-
-                }
-
-                // Weapons
-                if (type.contains("WEAPONS") || type.contains("SHOOTING")) {
-                    markeradded = true;
-                    if (map.get("WEAPONS")) {
-
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .visible(false)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
-                                .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
-                        mMap.addMarker(options);
-                    } else {
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .visible(false)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
-                        mMap.addMarker(options);
-                    }
-                }
-
-                // MISCELLANEOUS
-                if (markeradded == false) {
-                    if (map.get("MISCELLANEOUS")) {
-
-                        options
-                                .title(crime.getType())
-                                .position(latLng)
-                                .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
-                                .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
-                        mMap.addMarker(options);
-                    }
-                }
-
-
-            } catch (NullPointerException e) {
+            } catch (ParseException e) {
                 e.printStackTrace();
-
             }
+            if (crimeDate != null) {
+                if (crimeDate.after(fromDate) && crimeDate.before(toDate)) {
+                    Log.e("My App", "Crime Date: " + crimeDate);
+                    markeradded = false;
 
+                    LatLng latLng = new LatLng(Double.parseDouble(crime.getLatitude()), Double.parseDouble(crime.getLongitude()));
+
+                    MarkerOptions options = new MarkerOptions();
+                    String type = crime.getType();
+                    try {
+                        // Assault
+
+                        if (type.contains("ASSAULT") || type.contains("AWDW")) {
+                            markeradded = true;
+                            if (map.get("ASSAULT")) {
+
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA))
+                                        .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
+                                mMap.addMarker(options);
+                            } else {
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .visible(false)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_MAGENTA));
+                                mMap.addMarker(options);
+                            }
+                        }
+
+                        // Larceny
+                        if (type.contains("LARCENY")) {
+                            markeradded = true;
+                            if (map.get("LARCENY")) {
+
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE))
+                                        .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
+                                ;
+                                mMap.addMarker(options);
+                            } else {
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .visible(false)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_ROSE));
+                                mMap.addMarker(options);
+                            }
+                        }
+
+                        // Robbery
+                        if (type.contains("ROBBERY") || type.contains("BURGLARY")) {
+                            markeradded = true;
+                            if (map.get("ROBBERY")) {
+
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+                                        .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
+                                mMap.addMarker(options);
+                            } else {
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .visible(false)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE));
+                                mMap.addMarker(options);
+                            }
+                        }
+
+                        // Trespassing
+                        if (type.contains("TRESPASSING") || type.contains("B & E")) {
+                            markeradded = true;
+                            if (map.get("TRESPASSING")) {
+
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW))
+                                        .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
+                                mMap.addMarker(options);
+                            } else {
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .visible(false)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_YELLOW));
+                                mMap.addMarker(options);
+                            }
+                        }
+
+                        // Property
+                        if (type.contains("PROPERTY")) {
+                            markeradded = true;
+                            if (map.get("PROPERTY")) {
+
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                                        .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
+                                mMap.addMarker(options);
+                            } else {
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .visible(false)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE));
+                                mMap.addMarker(options);
+                            }
+
+                        }
+
+                        // Weapons
+                        if (type.contains("WEAPONS") || type.contains("SHOOTING")) {
+                            markeradded = true;
+                            if (map.get("WEAPONS")) {
+
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .visible(false)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN))
+                                        .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
+                                mMap.addMarker(options);
+                            } else {
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .visible(false)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_CYAN));
+                                mMap.addMarker(options);
+                            }
+                        }
+
+                        // MISCELLANEOUS
+                        if (markeradded == false) {
+                            if (map.get("MISCELLANEOUS")) {
+
+                                options
+                                        .title(crime.getType())
+                                        .position(latLng)
+                                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_RED))
+                                        .snippet("Location: " + crime.getAddress() + "\nDate: " + crime.getDate() + "\nTime: " + crime.getTime());
+                                mMap.addMarker(options);
+                            }
+                        }
+
+
+                    } catch (NullPointerException e) {
+                        e.printStackTrace();
+
+                    }
+
+                }
+            }
         }
-
 
     }
 
